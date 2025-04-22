@@ -1,16 +1,10 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-enum Role {
-  admin
-  user
 }
 
 model User {
@@ -19,7 +13,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   password      String
-  role          Role      @default(user)
+  role          String    @default("user")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }

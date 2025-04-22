@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/user/entity/user.entity';
+import { UserService } from 'src/user/user.service';
+import * as bcrypt from 'bcrypt';
+import { UnauthorizedError } from './errors/unauthorized.error';
+import { UserPayload } from './dto/UserPayload';
+import { UserToken } from './dto/UserToken';
 
 @Injectable()
 export class AuthService {
@@ -8,28 +14,34 @@ export class AuthService {
         private readonly userService: UserService,
     ) { }
 
-
-    async login(user: any) {
-        const payload = {
+    async login(user: User): Promise<UserToken> {
+        const payload: UserPayload = {
             sub: user.id,
             email: user.email,
             name: user.name,
         };
-
-        const accessToken = this.jwtService.sign(payload, {
-            secret: this.configService.get('JWT_ACCESS_SECRET'),
-            expiresIn: '15m',
-        });
-
-        const refreshToken = this.jwtService.sign(payload, {
-            secret: this.configService.get('JWT_REFRESH_SECRET'),
-            expiresIn: '7d',
-        });
-
-        await this.usersService.updateRefreshToken(user.id, refreshToken);
-
-        return { accessToken, refreshToken };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
     }
 
+    async validateUser(email: string, password: string): Promise<User> {
+        const user = await this.userService.findByEmail(email);
 
+        if (user) {
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+
+            if (isPasswordValid) {
+                return {
+                    ...user,
+                    id: user.id,
+                    password: undefined,
+                };
+            }
+        }
+
+        throw new UnauthorizedError(
+            'Email address or password provided is incorrect.',
+        );
+    }
 }

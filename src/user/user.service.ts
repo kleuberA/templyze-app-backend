@@ -39,7 +39,6 @@ export class UserService {
                 name: createUser.name,
                 email: createUser.email.toLowerCase(),
                 password: newPassword,
-                roles: { create: [{ name: 'user' }] },
             },
         });
         return user;

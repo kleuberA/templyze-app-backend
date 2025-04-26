@@ -9,4 +9,16 @@ export class AppLibraryService {
         return this.prisma.app.findMany({});
     }
 
+    async updateApp(id: string) {
+        return this.prisma.app.updateMany({
+            where: {
+                id,
+            },
+            data: {
+                name: "Updated App",
+                description: "Updated Description",
+            },
+        });
+    }
+
 }

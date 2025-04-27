@@ -9,7 +9,7 @@ export class AppLibraryService {
         return this.prisma.app.findMany({});
     }
 
-    async updateApp(id: string) {
+    async updateAppLibrary(id: string) {
         return this.prisma.app.updateMany({
             where: {
                 id,

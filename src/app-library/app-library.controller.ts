@@ -1,7 +1,8 @@
-import { Controller, Get, HttpStatus, Put, Res } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpStatus, Param, Patch, Put, Res } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { AppLibraryService } from './app-library.service';
 import { Response } from 'express';
+import { UpdateAppLibraryDto } from './dto/update-app-library-dto';
 
 @ApiTags('App Library')
 @Controller('app-library')
@@ -20,10 +21,11 @@ export class AppLibraryController {
     }
 
     @ApiBearerAuth()
-    @Put('/update-app')
-    async updateAppLibrary(@Res() resp: Response) {
+    @ApiBody({ type: UpdateAppLibraryDto })
+    @Patch('/update-app/:id')
+    async updateAppLibrary(@Res() resp: Response, @Param('id') appId: string, @Body() updateAppLibrary: UpdateAppLibraryDto) {
         try {
-            const apps = await this.appLibraryService.updateAppLibrary('1');
+            const apps = await this.appLibraryService.updateAppLibrary(appId, updateAppLibrary);
             return resp.status(HttpStatus.OK).json({ message: "Update app library!", data: apps });
         } catch (error) {
             return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to update app library!", error: error.message });

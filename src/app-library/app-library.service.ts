@@ -32,4 +32,22 @@ export class AppLibraryService {
         });
     }
 
+    async deleteAppLibraryById(appId: string) {
+        const app = await this.prisma.app.findUnique({
+            where: {
+                id: appId,
+            },
+        });
+
+        if (!app) {
+            throw new Error("App not found!");
+        }
+
+        return this.prisma.app.delete({
+            where: {
+                id: appId
+            },
+        });
+    }
+
 }

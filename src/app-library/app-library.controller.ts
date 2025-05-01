@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Put, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { AppLibraryService } from './app-library.service';
 import { Response } from 'express';
@@ -29,6 +29,17 @@ export class AppLibraryController {
             return resp.status(HttpStatus.OK).json({ message: "Update app library!", data: apps });
         } catch (error) {
             return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to update app library!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
+    @Delete('/delete-app/:id')
+    async deleteAppLibraryById(@Res() resp: Response, @Param('id') appId: string) {
+        try {
+            const app = await this.appLibraryService.deleteAppLibraryById(appId);
+            return resp.status(HttpStatus.OK).json({ message: "Delete app library!", data: app });
+        } catch (error) {
+            return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to delete app library!", error: error.message });
         }
     }
 

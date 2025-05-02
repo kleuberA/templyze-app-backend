@@ -21,6 +21,17 @@ export class AppLibraryController {
     }
 
     @ApiBearerAuth()
+    @Get('/app/:id')
+    async getAppLibraryById(@Res() resp: Response, @Param('id') appId: string) {
+        try {
+            const app = await this.appLibraryService.getAppLibraryById(appId);
+            return resp.status(HttpStatus.OK).json({ message: "Get app library!", data: app });
+        } catch (error) {
+            return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to get app library!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
     @ApiBody({ type: UpdateAppLibraryDto })
     @Patch('/update-app/:id')
     async updateAppLibrary(@Res() resp: Response, @Param('id') appId: string, @Body() updateAppLibrary: UpdateAppLibraryDto) {

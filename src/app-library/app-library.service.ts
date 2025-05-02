@@ -10,6 +10,20 @@ export class AppLibraryService {
         return this.prisma.app.findMany({});
     }
 
+    async getAppLibraryById(appId: string) {
+        const app = await this.prisma.app.findUnique({
+            where: {
+                id: appId,
+            },
+        });
+
+        if (!app) {
+            throw new Error("App not found!");
+        }
+
+        return app;
+    }
+
     async updateAppLibrary(appId: string, updateAppLibrary: UpdateAppLibraryDto) {
 
         const app = await this.prisma.app.findUnique({

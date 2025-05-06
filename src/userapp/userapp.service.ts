@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserAppInfoByIdEntity } from './entity/userAppInfoById.entity';
 
 @Injectable()
 export class UserappService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async getUserInfoById(userID: string) {
+    async getUserInfoById(userID: string): Promise<UserAppInfoByIdEntity> {
         const user = await this.prisma.user.findUnique({
             where: { id: userID },
             include: {

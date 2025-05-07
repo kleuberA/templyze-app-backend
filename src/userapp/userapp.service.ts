@@ -26,7 +26,22 @@ export class UserappService {
             updatedAt: user.updatedAt,
             purchases: user.purchases
         };
+    }
 
+    async deleteUserAppInfoById(userAppID: string): Promise<void> {
+        const userApp = await this.prisma.user.findUnique({
+            where: { id: userAppID },
+        });
+
+        if (!userApp) {
+            throw new Error('User not found');
+        }
+
+        await this.prisma.user.delete({
+            where: { id: userAppID },
+        });
+
+        return;
     }
 
 }

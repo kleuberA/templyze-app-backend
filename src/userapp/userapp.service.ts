@@ -28,6 +28,45 @@ export class UserappService {
         };
     }
 
+    async updateUserAppInfoById(userID: string, userAppInfo: UserAppInfoByIdEntity): Promise<UserAppInfoByIdEntity> {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userID },
+        });
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const updatedUser = await this.prisma.user.update({
+            where: { id: userID },
+            data: {
+                ...userAppInfo,
+                purchases: {
+                    set: userAppInfo.purchases.map(purchase => ({
+                        id: purchase.id,
+                        createdAt: purchase.createdAt,
+                        updatedAt: purchase.updatedAt,
+                        userId: purchase.userId,
+                        appId: purchase.appId,
+                        customName: purchase.customName,
+                    })),
+                },
+            },
+            include: {
+                purchases: true,
+            },
+        });
+
+        return {
+            id: updatedUser.id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            createdAt: updatedUser.createdAt,
+            updatedAt: updatedUser.updatedAt,
+            purchases: updatedUser.purchases
+        };
+    }
+
     async deleteUserAppInfoById(userAppID: string): Promise<void> {
         const userApp = await this.prisma.user.findUnique({
             where: { id: userAppID },

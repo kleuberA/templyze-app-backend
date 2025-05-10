@@ -1,6 +1,6 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, HttpStatus, Param, Post, Res } from '@nestjs/common';
 import { IsPublic } from 'src/auth/decorators/ispublic.decorator';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CreateUser } from './dto/create-user-dto';
 import { UserService } from './user.service';
 import { Response } from 'express';
@@ -20,6 +20,17 @@ export class UserController {
             return resp.status(HttpStatus.OK).json({ message: "User created successfully!" });
         } catch (error) {
             return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to create user!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
+    @Delete("/user/delete/:id")
+    async deleteUser(@Param('id') userID: string, @Res() resp: Response) {
+        try {
+            await this.userService.deleteUser(userID);
+            return resp.status(HttpStatus.OK).json({ message: "User deleted successfully!" });
+        } catch (error) {
+            return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to delete user!", error: error.message });
         }
     }
 

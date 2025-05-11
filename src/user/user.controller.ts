@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
 import { IsPublic } from 'src/auth/decorators/ispublic.decorator';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CreateUser } from './dto/create-user-dto';
@@ -10,6 +10,17 @@ import { Response } from 'express';
 export class UserController {
 
     constructor(private readonly userService: UserService) { }
+
+    @ApiBearerAuth()
+    @Get("/users")
+    async getAllUsers(@Res() resp: Response) {
+        try {
+            const users = await this.userService.getUsers();
+            return resp.status(HttpStatus.OK).json({ message: "Users fetched successfully!", users });
+        } catch (error) {
+            return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to fetch users!", error: error.message });
+        }
+    }
 
     @IsPublic()
     @ApiBody({ type: CreateUser })

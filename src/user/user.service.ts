@@ -20,6 +20,25 @@ export class UserService {
         return users;
     }
 
+    async getUserById(id: string) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+            }
+        });
+
+        if (!user) {
+            throw new BadRequestException("User does not exist!");
+        }
+
+        return user;
+    }
+
     async createUser(createUser: CreateUser) {
 
         const userExist = await this.prisma.user.findUnique({

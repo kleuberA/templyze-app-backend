@@ -22,6 +22,17 @@ export class UserController {
         }
     }
 
+    @ApiBearerAuth()
+    @Get("/user/:id")
+    async getUserById(@Param('id') userID: string, @Res() resp: Response) {
+        try {
+            const user = await this.userService.getUserById(userID);
+            return resp.status(HttpStatus.OK).json({ message: "User fetched successfully!", user });
+        } catch (error) {
+            return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to fetch user!", error: error.message });
+        }
+    }
+
     @IsPublic()
     @ApiBody({ type: CreateUser })
     @Post("create")

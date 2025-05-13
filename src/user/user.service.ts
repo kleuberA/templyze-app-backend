@@ -63,6 +63,29 @@ export class UserService {
         return user;
     }
 
+    async changePassword(id: string, password: string) {
+        const userExist = await this.prisma.user.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if (!userExist) {
+            throw new BadRequestException("User does not exist!");
+        }
+
+        let newPassword = await bcrypt.hash(password, 10);
+
+        return await this.prisma.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                password: newPassword
+            }
+        })
+    }
+
     async updateUser(id: string, updateUser: UpdateUser) {
 
         const userExist = await this.prisma.user.findFirst({

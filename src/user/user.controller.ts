@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Res } from '@nestjs/common';
 import { IsPublic } from 'src/auth/decorators/ispublic.decorator';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CreateUser } from './dto/create-user-dto';
@@ -30,6 +30,17 @@ export class UserController {
             return resp.status(HttpStatus.OK).json({ message: "User fetched successfully!", user });
         } catch (error) {
             return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to fetch user!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
+    @Patch()
+    async changePassword(@Body() body: { id: string, password: string }, @Res() resp: Response) {
+        try {
+            const user = await this.userService.changePassword(body.id, body.password);
+            return resp.status(HttpStatus.OK).json({ message: "Password changed successfully!", user });
+        } catch (error) {
+            return resp.status(HttpStatus.BAD_REQUEST).json({ message: "Failed to change password!", error: error.message });
         }
     }
 

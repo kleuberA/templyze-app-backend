@@ -24,4 +24,18 @@ export class TaskService {
         });
     }
 
+    async getTaskById(taskId: string) {
+        const task = await this.prisma.task.findUnique({
+            where: {
+                id: taskId,
+            }
+        })
+
+        if (!task) {
+            throw new Error('Task not found!');
+        }
+
+        return task;
+    }
+
 }

@@ -19,4 +19,15 @@ export class TaskController {
         }
     }
 
+    @ApiBearerAuth()
+    @Get('/task-by-id/:taskid')
+    async getTaskById(@Param('taskid') taskID: string, @Res() resp: Response) {
+        try {
+            const task = await this.taskService.getTaskById(taskID);
+            return resp.status(200).json({ message: "Task fetched successfully!", task });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to fetch task!", error: error.message });
+        }
+    }
+
 }

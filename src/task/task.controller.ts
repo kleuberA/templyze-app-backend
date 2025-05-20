@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Res } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -27,6 +27,17 @@ export class TaskController {
             return resp.status(200).json({ message: "Task fetched successfully!", task });
         } catch (error) {
             return resp.status(400).json({ message: "Failed to fetch task!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
+    @Delete('/delete/taskbyid/:taskid')
+    async deleteTaskById(@Param('taskid') taskID: string, @Res() resp: Response) {
+        try {
+            const task = await this.taskService.deleteTaskById(taskID);
+            return resp.status(200).json({ message: "Task deleted successfully!", task });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to delete task!", error: error.message });
         }
     }
 

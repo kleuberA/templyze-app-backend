@@ -38,4 +38,22 @@ export class TaskService {
         return task;
     }
 
+    async deleteTaskById(taskId: string) {
+        const task = await this.prisma.task.findUnique({
+            where: {
+                id: taskId,
+            }
+        })
+
+        if (!task) {
+            throw new Error('Task not found!');
+        }
+
+        return this.prisma.task.delete({
+            where: {
+                id: taskId,
+            }
+        });
+    }
+
 }

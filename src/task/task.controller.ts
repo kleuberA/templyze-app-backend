@@ -41,4 +41,15 @@ export class TaskController {
         }
     }
 
+    @ApiBearerAuth()
+    @Delete('/delete/all-tasks-by-id/:userid')
+    async deleteAllTasksByUserId(@Param('userid') userID: string, @Res() resp: Response) {
+        try {
+            const tasks = await this.taskService.deleteAllTasksByUserId(userID);
+            return resp.status(200).json({ message: "Tasks deleted successfully!", tasks });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to delete tasks!", error: error.message });
+        }
+    }
+
 }

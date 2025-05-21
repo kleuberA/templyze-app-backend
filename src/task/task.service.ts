@@ -56,4 +56,22 @@ export class TaskService {
         });
     }
 
+    async deleteAllTasksByUserId(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: userId,
+            }
+        })
+
+        if (!user) {
+            throw new Error('User not found!');
+        }
+
+        return this.prisma.task.deleteMany({
+            where: {
+                userId,
+            }
+        });
+    }
+
 }

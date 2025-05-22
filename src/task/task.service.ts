@@ -24,6 +24,27 @@ export class TaskService {
         });
     }
 
+    async updatePriorityTask(taskId: string, priority: string) {
+        const task = await this.prisma.task.findUnique({
+            where: {
+                id: taskId,
+            }
+        })
+
+        if (!task) {
+            throw new Error('Task not found!');
+        }
+
+        return this.prisma.task.update({
+            where: {
+                id: taskId,
+            },
+            data: {
+                priority,
+            }
+        });
+    }
+
     async getTaskById(taskId: string) {
         const task = await this.prisma.task.findUnique({
             where: {

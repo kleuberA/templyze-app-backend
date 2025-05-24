@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Res } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -27,6 +27,17 @@ export class TaskController {
             return resp.status(200).json({ message: "Task fetched successfully!", task });
         } catch (error) {
             return resp.status(400).json({ message: "Failed to fetch task!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
+    @Patch('/update/priority-task/:taskid')
+    async updatePriorityTask(@Param('taskid') taskID: string, @Res() resp: Response, @Body() body: { priority: string }) {
+        try {
+            const updatedTask = await this.taskService.updatePriorityTask(taskID, body.priority);
+            return resp.status(200).json({ message: "Task priority updated successfully!", task: updatedTask });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to update task priority!", error: error.message });
         }
     }
 

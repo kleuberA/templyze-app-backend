@@ -42,6 +42,17 @@ export class TaskController {
     }
 
     @ApiBearerAuth()
+    @Patch('/update/task/:taskid')
+    async updateTask(@Param('taskid') taskID: string, @Res() resp: Response, @Body() body: any) {
+        try {
+            const updatedTask = await this.taskService.updateTask(taskID, body);
+            return resp.status(200).json({ message: "Task updated successfully!", task: updatedTask });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to update task!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
     @Delete('/delete/taskbyid/:taskid')
     async deleteTaskById(@Param('taskid') taskID: string, @Res() resp: Response) {
         try {

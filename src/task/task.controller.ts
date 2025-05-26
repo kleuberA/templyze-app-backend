@@ -74,4 +74,15 @@ export class TaskController {
         }
     }
 
+    @ApiBearerAuth()
+    @Get('/get/task-by-status/:userid/:status')
+    async getTasksByPriority(@Param('userid') userID: string, @Param('status') priority: string, @Res() resp: Response) {
+        try {
+            const tasks = await this.taskService.getTasksByUserIdAndPriority(userID, priority);
+            return resp.status(200).json({ message: "Tasks by priority fetched successfully!", tasks });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to fetch tasks by status!", error: error.message });
+        }
+    }
+
 }

@@ -78,6 +78,25 @@ export class TaskService {
         return task;
     }
 
+    async getTasksByUserIdAndPriority(userId: string, priority: string) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: userId,
+            }
+        })
+
+        if (!user) {
+            throw new Error('User not found!');
+        }
+
+        return this.prisma.task.findMany({
+            where: {
+                userId,
+                priority,
+            },
+        });
+    }
+
     async deleteTaskById(taskId: string) {
         const task = await this.prisma.task.findUnique({
             where: {

@@ -75,14 +75,26 @@ export class TaskController {
     }
 
     @ApiBearerAuth()
-    @Get('/get/task-by-status/:userid/:status')
-    async getTasksByPriority(@Param('userid') userID: string, @Param('status') priority: string, @Res() resp: Response) {
+    @Get('/get/task-by-priority/:userid/:priority')
+    async getTasksByPriority(@Param('userid') userID: string, @Param('priority') priority: string, @Res() resp: Response) {
         try {
             const tasks = await this.taskService.getTasksByUserIdAndPriority(userID, priority);
             return resp.status(200).json({ message: "Tasks by priority fetched successfully!", tasks });
         } catch (error) {
-            return resp.status(400).json({ message: "Failed to fetch tasks by status!", error: error.message });
+            return resp.status(400).json({ message: "Failed to fetch tasks by priority!", error: error.message });
         }
     }
+
+    @ApiBearerAuth()
+    @Get('/get/all-priorities/:userid')
+    async getAllPriorities(@Param('userid') userID: string, @Res() resp: Response) {
+        try {
+            const priorities = await this.taskService.getAllPriorities(userID);
+            return resp.status(200).json({ message: "Priorities fetched successfully!", priorities });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to fetch priorities!", error: error.message });
+        }
+    }
+
 
 }

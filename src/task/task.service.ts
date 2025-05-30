@@ -45,6 +45,29 @@ export class TaskService {
         });
     }
 
+    async createPriorityTask(userId: string, data: any) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: userId,
+            }
+        })
+
+        if (!user) {
+            throw new Error('User not found!');
+        }
+
+        if (!data.priority) {
+            throw new Error('Priority is required!');
+        }
+
+        return this.prisma.task.create({
+            data: {
+                ...data,
+                userId,
+            },
+        });
+    }
+
     async updateTask(taskId: string, data: any) {
         const task = await this.prisma.task.findUnique({
             where: {

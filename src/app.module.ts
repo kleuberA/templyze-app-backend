@@ -9,9 +9,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { UserappModule } from './userapp/userapp.module';
 import { TaskModule } from './task/task.module';
+import { FinancialTransactionModule } from './financial-transaction/financial-transaction.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UserModule, AppLibraryModule, UserappModule, TaskModule],
+  imports: [AuthModule, PrismaModule, UserModule, AppLibraryModule, UserappModule, TaskModule, FinancialTransactionModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_GUARD,

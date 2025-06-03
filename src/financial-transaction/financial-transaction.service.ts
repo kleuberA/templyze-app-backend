@@ -33,4 +33,21 @@ export class FinancialTransactionService {
         return transaction;
     }
 
+    async createFinancialTransaction(userId: string, data: any) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            throw new Error('User not found!');
+        }
+
+        return this.prisma.financialTransaction.create({
+            data: {
+                ...data,
+                userId,
+            },
+        });
+    }
+
 }

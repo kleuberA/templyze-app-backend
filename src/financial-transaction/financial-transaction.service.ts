@@ -50,4 +50,19 @@ export class FinancialTransactionService {
         });
     }
 
+    async updateFinancialTransaction(id: string, data: any) {
+        const transaction = await this.prisma.financialTransaction.findUnique({
+            where: { id },
+        });
+
+        if (!transaction) {
+            throw new Error('Financial transaction not found!');
+        }
+
+        return this.prisma.financialTransaction.update({
+            where: { id },
+            data,
+        });
+    }
+
 }

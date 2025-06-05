@@ -65,4 +65,18 @@ export class FinancialTransactionService {
         });
     }
 
+    async deleteFinancialTransaction(id: string) {
+        const transaction = await this.prisma.financialTransaction.findUnique({
+            where: { id },
+        });
+
+        if (!transaction) {
+            throw new Error('Financial transaction not found!');
+        }
+
+        return this.prisma.financialTransaction.delete({
+            where: { id },
+        });
+    }
+
 }

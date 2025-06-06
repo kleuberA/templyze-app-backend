@@ -1,4 +1,20 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
+import { FinancialTransactionService } from './financial-transaction.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('financial-transaction')
-export class FinancialTransactionController {}
+export class FinancialTransactionController {
+    constructor(private readonly financialService: FinancialTransactionService) { }
+
+    @ApiBearerAuth()
+    @Get('/get-financial-transactions-by-user-id/:userId')
+    async getFinancialTransactionsByUserId(@Param('userId') userID: string, @Res() resp) {
+        try {
+            const priorities = await this.financialService.getFinancialTransactionsByUserId(userID);
+            return resp.status(200).json({ message: "Financial transactions fetched successfully!", priorities });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to fetch Financial transactions!", error: error.message });
+        }
+    }
+
+}

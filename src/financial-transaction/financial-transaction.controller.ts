@@ -17,4 +17,15 @@ export class FinancialTransactionController {
         }
     }
 
+    @ApiBearerAuth()
+    @Get('/get-financial-transactions-by-id/:id')
+    async getFinancialTransactionsById(@Param('id') id: string, @Res() resp) {
+        try {
+            const financialTransaction = await this.financialService.getFinancialTransactionById(id);
+            return resp.status(200).json({ message: "Financial transaction fetched successfully!", financialTransaction });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to fetch Financial transaction!", error: error.message });
+        }
+    }
+
 }

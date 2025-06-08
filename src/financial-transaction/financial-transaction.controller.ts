@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { FinancialTransactionService } from './financial-transaction.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
@@ -25,6 +25,17 @@ export class FinancialTransactionController {
             return resp.status(200).json({ message: "Financial transaction fetched successfully!", financialTransaction });
         } catch (error) {
             return resp.status(400).json({ message: "Failed to fetch Financial transaction!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
+    @Post('/create-financial-transaction/:userId')
+    async createFinancialTransaction(@Body() financialTransactionData, @Res() resp, @Param('userId') userId: string) {
+        try {
+            const financialTransaction = await this.financialService.createFinancialTransaction(userId, financialTransactionData);
+            return resp.status(201).json({ message: "Financial transaction created successfully!", financialTransaction });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to create Financial transaction!", error: error.message });
         }
     }
 

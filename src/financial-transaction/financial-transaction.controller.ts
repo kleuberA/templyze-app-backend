@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Res } from '@nestjs/common';
 import { FinancialTransactionService } from './financial-transaction.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
@@ -47,6 +47,17 @@ export class FinancialTransactionController {
             return resp.status(200).json({ message: "Financial transaction updated successfully!", financialTransaction });
         } catch (error) {
             return resp.status(400).json({ message: "Failed to update Financial transaction!", error: error.message });
+        }
+    }
+
+    @ApiBearerAuth()
+    @Delete('/delete-financial-transaction/:id')
+    async deleteFinancialTransaction(@Param('id') id: string, @Res() resp) {
+        try {
+            await this.financialService.deleteFinancialTransaction(id);
+            return resp.status(200).json({ message: "Financial transaction deleted successfully!" });
+        } catch (error) {
+            return resp.status(400).json({ message: "Failed to delete Financial transaction!", error: error.message });
         }
     }
 
